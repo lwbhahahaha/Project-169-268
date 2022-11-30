@@ -1,0 +1,3 @@
+[submodule "Optimizers/FluxOptTools.jl"]
+	path = Optimizers/FluxOptTools.jl
+	url = https://github.com/baggepinnen/FluxOptTools.jl

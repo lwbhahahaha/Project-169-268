@@ -11,14 +11,14 @@ abstract type AbstractOptimiser end
 # heavily inspired by https://github.com/simonbatzner/L-BFGS-Julia/blob/master/L-BFGS_Project.ipynb/src/SLBFGS.jl
 # use https://github.com/baggepinnen/FluxOptTools.jl to get f 
 mutable struct LBFGS <: AbstractOptimiser
-	n::Int # number of variables
-	lossfun::Function # loss function for backtracking search
+    n::Int # number of variables
+    lossfun::Function # loss function for backtracking search
     m::Int # Memory length, was ∈ [2, 54] in paper
-	prev_g::Float64 # gradient at previous timestep 
-	prev_x::Float64 # x at previous timestep 
-	Sm # previous m x's
-	Ym # previous m gradients
-	k::Int # Internal iteration index
+    prev_g::Float64 # gradient at previous timestep 
+    prev_x::Float64 # x at previous timestep 
+    Sm # previous m x's
+    Ym # previous m gradients
+    k::Int # Internal iteration index
 
 	function LBFGS(n)
 		m = 20 
