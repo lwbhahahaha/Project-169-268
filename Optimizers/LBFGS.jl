@@ -11,25 +11,28 @@ abstract type AbstractOptimiser end
 # heavily inspired by https://github.com/simonbatzner/L-BFGS-Julia/blob/master/L-BFGS_Project.ipynb/src/SLBFGS.jl
 # use https://github.com/baggepinnen/FluxOptTools.jl to get f 
 mutable struct LBFGS <: AbstractOptimiser
-    n::Int # number of variables
     lossfun::Function # loss function for backtracking search
+
+    n::Int # number of variables
     m::Int # Memory length, was ∈ [2, 54] in paper
     prev_g::Float64 # gradient at previous timestep 
     prev_x::Float64 # x at previous timestep 
     Sm # previous m x's
-    Ym # previous m gradients
+    Ym # previxous m gradients
     k::Int # Internal iteration index
+    α # fixed step size
 
-	function LBFGS(n)
-		m = 20 
-		prev_g = 0 
-		prev_x = 0 
-		Sm = zeros(n,m)
-		Ym = zeros(n,m)
-		k = 0 
+    function LBFGS(n)
+        m = 20 
+        prev_g = 0 
+        prev_x = 0 
+        Sm = zeros(n,m)
+        Ym = zeros(n,m)
+        k = 0 
+        α = 0.03
 
-		new(n, 0, m, prev_g, prev_x, Sm, Ym, k)
-	end
+        new(0, n, m, prev_g, prev_x, Sm, Ym, k, α)
+    end
 end
 
 # ╔═╡ 47f702a4-0113-460a-9ea9-9abe6601a8f2
@@ -152,12 +155,11 @@ function apply!(o::LBFGS, x, Δ)
 	end
 	
 	# new direction=p, find new step size
-	α, fs, gs=backtracking(F,p,x)
 	
 	# update for next iteration
 	o.prev_x = x
 	o.prev_g = ∇
-	x .= x + α.*p
+	x .= x + o.α.*p
 	f1=fs
 	g1=gs
 	k=k+1
